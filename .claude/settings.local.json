@@ -6,7 +6,10 @@
       "Bash(bun install:*)",
       "Bash(~/.bun/bin/bun:*)",
       "Bash(git remote set-url:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "WebSearch",
+      "WebFetch(domain:bun.sh)",
+      "Bash(git add:*)"
     ],
     "defaultMode": "acceptEdits"
   }

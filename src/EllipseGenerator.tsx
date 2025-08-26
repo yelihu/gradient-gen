@@ -3,6 +3,10 @@ import { Button } from './components/ui/button';
 import { Card } from './components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './components/ui/select';
 import { Label } from './components/ui/label';
+import { Input } from './components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './components/ui/dialog';
+import { ColorPicker } from './components/ui/color-picker';
+import { Plus } from 'lucide-react';
 
 interface EllipseConfig {
   color: string;
@@ -13,7 +17,7 @@ interface EllipseConfig {
   translation: [number, number];
 }
 
-const colorPalettes = {
+const defaultColorPalettes = {
   'OpenAI (2020)': ['#5135FF', '#FF5828', '#F69CFF', '#FFA50F'],
   'venki.dev #1': ['#FE69B7', '#BC0A6F', '#00F5FF', '#7B68EE'],
   'venki.dev #2': ['#FE69B7', '#BC0A6F', '#E6E6FA', '#6495ED'],
@@ -63,8 +67,14 @@ function generateSVG(palette: string[]): string {
 
 export default function EllipseGenerator() {
   const [selectedPalette, setSelectedPalette] = useState('OpenAI (2020)');
-  const [svgContent, setSvgContent] = useState(() => generateSVG(colorPalettes['OpenAI (2020)']));
+  const [customPalettes, setCustomPalettes] = useState<Record<string, string[]>>({});
+  const [svgContent, setSvgContent] = useState(() => generateSVG(defaultColorPalettes['OpenAI (2020)']));
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newPaletteName, setNewPaletteName] = useState('');
+  const [newPaletteColors, setNewPaletteColors] = useState<string[]>(['#FF0000', '#00FF00', '#0000FF', '#FFFF00']);
   const svgRef = useRef<HTMLDivElement>(null);
+
+  const colorPalettes = { ...defaultColorPalettes, ...customPalettes };
 
   const handleRegenerate = () => {
     setSvgContent(generateSVG(colorPalettes[selectedPalette as keyof typeof colorPalettes]));
@@ -73,6 +83,20 @@ export default function EllipseGenerator() {
   const handlePaletteChange = (palette: string) => {
     setSelectedPalette(palette);
     setSvgContent(generateSVG(colorPalettes[palette as keyof typeof colorPalettes]));
+  };
+
+  const handleSaveCustomPalette = () => {
+    if (newPaletteName.trim() && newPaletteColors.length >= 2) {
+      setCustomPalettes(prev => ({
+        ...prev,
+        [newPaletteName.trim()]: newPaletteColors
+      }));
+      setSelectedPalette(newPaletteName.trim());
+      setSvgContent(generateSVG(newPaletteColors));
+      setNewPaletteName('');
+      setNewPaletteColors(['#FF0000', '#00FF00', '#0000FF', '#FFFF00']);
+      setIsDialogOpen(false);
+    }
   };
 
   const handleDownloadSVG = () => {
@@ -148,6 +172,53 @@ export default function EllipseGenerator() {
                 </SelectContent>
               </Select>
             </div>
+            
+            {/* Add Custom Palette Button */}
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="w-full" variant="outline">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Custom Palette
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Create Custom Color Palette</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="palette-name">Palette Name</Label>
+                    <Input
+                      id="palette-name"
+                      value={newPaletteName}
+                      onChange={(e) => setNewPaletteName(e.target.value)}
+                      placeholder="My Custom Palette"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label>Colors</Label>
+                    <ColorPicker
+                      colors={newPaletteColors}
+                      onColorsChange={setNewPaletteColors}
+                      maxColors={8}
+                    />
+                  </div>
+                  
+                  <div className="flex justify-end gap-3">
+                    <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button 
+                      onClick={handleSaveCustomPalette}
+                      disabled={!newPaletteName.trim() || newPaletteColors.length < 2}
+                    >
+                      Save Palette
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
           </Card>
           
           {/* Right Pane - Preview and Controls */}

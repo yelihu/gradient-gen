@@ -1,5 +1,13 @@
 {
   "permissions": {
+    "allow": [
+      "Bash(bun dev:*)",
+      "Bash(source:*)",
+      "Bash(bun install:*)",
+      "Bash(~/.bun/bin/bun:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git checkout:*)"
+    ],
     "defaultMode": "acceptEdits"
   }
 }

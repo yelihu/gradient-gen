@@ -16,7 +16,12 @@ interface EllipseConfig {
 const colorPalettes = {
   'OpenAI (2020)': ['#5135FF', '#FF5828', '#F69CFF', '#FFA50F'],
   'venki.dev #1': ['#FE69B7', '#BC0A6F', '#00F5FF', '#7B68EE'],
-  'venki.dev #2': ['#FE69B7', '#BC0A6F', '#E6E6FA', '#6495ED']
+  'venki.dev #2': ['#FE69B7', '#BC0A6F', '#E6E6FA', '#6495ED'],
+  'Sunset': ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A'],
+  'Forest': ['#2D5016', '#61A532', '#8FBC8F', '#228B22'],
+  'Ocean': ['#006994', '#247BA0', '#13293D', '#1B98E0'],
+  'Purple Dream': ['#8B5CF6', '#A855F7', '#C084FC', '#E879F9'],
+  'Fire to Ice': ['#FF0000', '#FFFF00', '#FFFFFF', '#0000FF']
 };
 
 function generateRandomEllipse(palette: string[]): EllipseConfig {
